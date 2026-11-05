@@ -1,4 +1,4 @@
-"""Hold mouse button 4, say a music command, let go: the Red bot runs it.
+"""Hold the voice key (mouse button 4 by default), say a music command, let go: the Red bot runs it.
 
 Speech is turned into text on this PC (faster-whisper); only the text goes to the bot.
 """
@@ -30,13 +30,14 @@ for _d in glob.glob(os.path.join(_base, "nvidia", "*", "bin")):
     os.environ["PATH"] = _d + os.pathsep + os.environ["PATH"]
 
 from faster_whisper import WhisperModel
+from keys import KeyState
 from overlay import run_overlay
 import ctypes
 
 CFG = json.loads((HERE / "config.json").read_text(encoding="utf-8"))
 RATE = 16000
 MIN_SECONDS = 0.4
-XBUTTON = {"x1": 1, "x2": 2}[CFG.get("button", "x1")]
+KEY = KeyState(CFG, HERE / "config.json")
 VOCAB_FILE = HERE / "vocabulary.txt"
 
 
@@ -147,19 +148,20 @@ def log(text: str) -> None:
     print(time.strftime("%H:%M:%S"), text, flush=True)
 
 
-VK = {"x1": 0x05, "x2": 0x06}[CFG.get("button", "x1")]
-
-
 def watch_button() -> None:
     """Poll the button state (no hook, so games and anti-cheat have nothing to block).
     The click still reaches the game, which is fine: 'Back' is rarely bound."""
     down = False
     get = ctypes.windll.user32.GetAsyncKeyState
     while True:
-        now = bool(get(VK) & 0x8000)
+        if KEY.capturing:  # picking a new key: don't record
+            down = False
+            time.sleep(0.05)
+            continue
+        now = bool(get(KEY.vk) & 0x8000)
         if now != down:
             down = now
-            log("button 4 " + ("down" if down else "up"))
+            log(f"{KEY.label} " + ("down" if down else "up"))
             (start_recording if down else stop_recording)()
         time.sleep(0.01)
 
@@ -184,12 +186,12 @@ def load() -> None:
         # No usable NVIDIA card: a smaller model keeps the wait short on the CPU.
         model = WhisperModel(CFG.get("cpu_model", "small"), device="cpu", compute_type="int8")
     threading.Thread(target=watch_button, daemon=True).start()
-    say("ready")
+    say("ready", "", f"Hold {KEY.label} and talk")
 
 
 def main() -> None:
     single_instance()
-    run_overlay(ui, lambda: level if held else 0.0, lambda: threading.Thread(target=load, daemon=True).start(), HERE)
+    run_overlay(ui, lambda: level if held else 0.0, lambda: threading.Thread(target=load, daemon=True).start(), HERE, (lambda: KEY.label, lambda: KEY.change(say)))
 
 
 if __name__ == "__main__":

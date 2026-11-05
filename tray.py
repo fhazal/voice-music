@@ -38,8 +38,10 @@ def start_with_windows(on: bool, exe: Path) -> None:
     )
 
 
-def start_tray(app_dir: Path, title: str = "Voice Music") -> None:
-    """Show the tray icon. Quit ends the whole program."""
+def start_tray(app_dir: Path, title: str = "Voice Music", key=None) -> None:
+    """Show the tray icon. Quit ends the whole program.
+
+    key = (get_label, change): the current voice key's name and a function that asks for a new one."""
     exe = Path(sys.executable) if getattr(sys, "frozen", False) else None
 
     def toggle(icon, item):
@@ -56,9 +58,14 @@ def start_tray(app_dir: Path, title: str = "Voice Music") -> None:
     items = [
         pystray.MenuItem(f"{title} is running", None, enabled=False),
         pystray.Menu.SEPARATOR,
+    ]
+    if key:
+        label, change = key
+        items.append(pystray.MenuItem(lambda item: f"Change voice key…   ({label()})", lambda icon, item: change()))
+    items += [
         pystray.MenuItem("Start with Windows", toggle, checked=lambda item: STARTUP.exists(), enabled=exe is not None),
         pystray.MenuItem("Open log folder", open_logs),
         pystray.Menu.SEPARATOR,
         pystray.MenuItem("Quit", quit_app),
     ]
-    pystray.Icon("VoiceMusic", make_icon(), f"{title}: hold mouse 4 and talk", pystray.Menu(*items)).run_detached()
+    pystray.Icon("VoiceMusic", make_icon(), f"{title}: hold your voice key and talk", pystray.Menu(*items)).run_detached()

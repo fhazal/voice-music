@@ -15,6 +15,7 @@ STATES = {
     "think": ("#e8b04b", "", "Working…", "", 60),
     "ok": ("#57f287", "", "Done", "", 4),
     "warn": ("#f0a04b", "", "Couldn't do that", "", 6),
+    "listen_key": ("#e8b04b", "", "Press your new key", "Esc to cancel", 22),
 }
 
 
@@ -23,7 +24,7 @@ def rounded(canvas, x1, y1, x2, y2, r, **kw):
     return canvas.create_polygon(pts, smooth=True, **kw)
 
 
-def run_overlay(ui: "queue.Queue", get_level, start=None, tray_dir=None) -> None:
+def run_overlay(ui: "queue.Queue", get_level, start=None, tray_dir=None, key=None) -> None:
     """ui carries (state, title, sub) tuples; get_level() returns 0..1 while recording."""
     root = tk.Tk()
     root.overrideredirect(True)
@@ -93,7 +94,7 @@ def run_overlay(ui: "queue.Queue", get_level, start=None, tray_dir=None) -> None
         try:
             from tray import start_tray
 
-            start_tray(tray_dir)
+            start_tray(tray_dir, key=key)
         except Exception:  # the program works without a tray icon
             pass
     root.withdraw()

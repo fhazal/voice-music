@@ -13,7 +13,7 @@ import tempfile
 import urllib.request
 from pathlib import Path
 
-VERSION = "1.3"  # keep in step with AppVer in installer.iss
+VERSION = "1.4"  # keep in step with AppVer in installer.iss
 API = "https://api.github.com/repos/fhazal/voice-music/releases/latest"
 UA = {"User-Agent": "VoiceMusic-Updater"}
 

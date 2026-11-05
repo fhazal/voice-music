@@ -9,7 +9,9 @@ hold mouse 4 → "play Eminem Slim Shady" → let go → the bot plays it
 
 Say `play …`, `skip` (or `next`), `pause`, `resume`, `stop` or `volume 40`. English and Malay work.
 
-A small microphone icon sits in the Windows tray (next to the clock). Right-click it to start with Windows, open the log folder, or **Quit**.
+A small microphone icon sits in the Windows tray (next to the clock). Right-click it to change the voice key, start with Windows, open the log folder, or **Quit**.
+
+The voice key is mouse button 4 by default. **Change voice key…** in the tray menu lets you press any other key (Page Up, F9, mouse 5…) and it works straight away. The program only watches the key; the game or app still gets it too, so pick one you rarely use.
 
 The installed version checks GitHub for a newer release each time it starts, verifies the download's checksum, and updates itself. Turn it off with "auto_update": false in config.json.
 

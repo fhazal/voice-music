@@ -19,6 +19,7 @@ from pathlib import Path
 import numpy as np
 import sounddevice as sd
 
+from keys import KeyState
 from overlay import run_overlay
 
 FROZEN = getattr(sys, "frozen", False)
@@ -30,7 +31,7 @@ CFG = json.loads((HERE / "config.json").read_text(encoding="utf-8"))
 RATE = 16000
 MIN_SECONDS = 0.4
 MAX_SECONDS = 15
-VK = {"x1": 0x05, "x2": 0x06}[CFG.get("button", "x1")]
+KEY = KeyState(CFG, HERE / "config.json")
 
 ui: "queue.Queue[tuple[str, str]]" = queue.Queue()
 frames: list = []
@@ -119,10 +120,14 @@ def watch_button() -> None:
     down = False
     get = ctypes.windll.user32.GetAsyncKeyState
     while True:
-        now = bool(get(VK) & 0x8000)
+        if KEY.capturing:  # picking a new key: don't record
+            down = False
+            time.sleep(0.05)
+            continue
+        now = bool(get(KEY.vk) & 0x8000)
         if now != down:
             down = now
-            log("button 4 " + ("down" if down else "up"))
+            log(f"{KEY.label} " + ("down" if down else "up"))
             (start_recording if down else stop_recording)()
         if held and time.time() - started > MAX_SECONDS:
             stop_recording()
@@ -140,13 +145,13 @@ def main() -> None:
 
     def start():
         threading.Thread(target=watch_button, daemon=True).start()
-        say("ready")
+        say("ready", "", f"Hold {KEY.label} and talk")
         if FROZEN:  # only the installed program updates itself
             from updater import check_and_update
 
             threading.Thread(target=check_and_update, args=(say, log, CFG.get("auto_update", True)), daemon=True).start()
 
-    run_overlay(ui, lambda: level if held else 0.0, start, HERE)
+    run_overlay(ui, lambda: level if held else 0.0, start, HERE, (lambda: KEY.label, lambda: KEY.change(say)))
 
 
 if __name__ == "__main__":
