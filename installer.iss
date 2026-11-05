@@ -1,6 +1,6 @@
 ; Voice Music for BajuBesi: friend installer (light app, speech runs on the BajuBesi server)
 #define AppName "Voice Music for BajuBesi"
-#define AppVer "1.2"
+#define AppVer "1.3"
 #define Exe "VoiceMusicLite.exe"
 
 [Setup]
@@ -35,6 +35,7 @@ Name: "{autodesktop}\Voice Music"; Filename: "{app}\{#Exe}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#Exe}"; Description: "Start Voice Music now"; Flags: nowait postinstall skipifsilent shellexec
+Filename: "{app}\{#Exe}"; Flags: nowait shellexec; Check: WizardSilent
 
 [UninstallRun]
 Filename: "taskkill.exe"; Parameters: "/F /IM {#Exe}"; Flags: runhidden; RunOnceId: "KillApp"
@@ -102,16 +103,29 @@ begin
   end;
 end;
 
+function HasOldConfig(): Boolean;
+var
+  T: AnsiString;
+begin
+  { An earlier install already holds a webhook address: an update keeps it. }
+  Result := LoadStringFromFile(AddBackslash(WizardDirValue) + 'config.json', T) and (Pos('/api/webhooks/', T) > 0);
+end;
+
+function KeepOldConfig(): Boolean;
+begin
+  Result := (WebhookParam() = '') and HasOldConfig();
+end;
+
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-  Result := Silent() and (PageID = HookPage.ID);
+  Result := (PageID = HookPage.ID) and (Silent() or KeepOldConfig());
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 var
   Hook: String;
 begin
-  if CurStep = ssPostInstall then
+  if (CurStep = ssPostInstall) and not KeepOldConfig() then
   begin
     if Silent() then Hook := WebhookParam() else Hook := Trim(HookPage.Values[0]);
     SaveStringToFile(ExpandConstant('{app}\config.json'),

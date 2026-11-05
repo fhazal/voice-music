@@ -11,6 +11,8 @@ Say `play …`, `skip` (or `next`), `pause`, `resume`, `stop` or `volume 40`. En
 
 A small microphone icon sits in the Windows tray (next to the clock). Right-click it to start with Windows, open the log folder, or **Quit**.
 
+The installed version checks GitHub for a newer release each time it starts, verifies the download's checksum, and updates itself. Turn it off with "auto_update": false in config.json.
+
 ## For friends: install
 
 1. Ask the server admin for your **webhook address** (they send it privately; treat it like a password).

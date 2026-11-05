@@ -141,6 +141,10 @@ def main() -> None:
     def start():
         threading.Thread(target=watch_button, daemon=True).start()
         say("ready")
+        if FROZEN:  # only the installed program updates itself
+            from updater import check_and_update
+
+            threading.Thread(target=check_and_update, args=(say, log, CFG.get("auto_update", True)), daemon=True).start()
 
     run_overlay(ui, lambda: level if held else 0.0, start, HERE)
 
