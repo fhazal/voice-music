@@ -1,0 +1,6 @@
+{
+  "webhook": "PASTE-THE-WEBHOOK-URL-YOU-WERE-GIVEN",
+  "button": "x1",
+  "model": "large-v3-turbo",
+  "language": null
+}

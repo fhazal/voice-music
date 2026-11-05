@@ -1,0 +1,14 @@
+*
+!.gitignore
+!README.md
+!LICENSE
+!requirements.txt
+!voice_friend.py
+!voice_music.py
+!overlay.py
+!installer.iss
+!config.friend.example.json
+!vocabulary.txt
+!server/
+!server/voice-stt/
+!server/voice-stt/*

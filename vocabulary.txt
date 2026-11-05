@@ -1,0 +1,6 @@
+# One artist or song per line; the speech model listens for these names first.
+Black Dog Bone
+Bila Rindu
+Eminem
+The Real Slim Shady
+Slim Shady
