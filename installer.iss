@@ -1,6 +1,6 @@
 ; Voice Music for BajuBesi: friend installer (light app, speech runs on the BajuBesi server)
 #define AppName "Voice Music for BajuBesi"
-#define AppVer "1.0"
+#define AppVer "1.2"
 #define Exe "VoiceMusicLite.exe"
 
 [Setup]

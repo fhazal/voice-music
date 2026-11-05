@@ -1,6 +1,8 @@
 numpy
 sounddevice
 pyinstaller
+pystray
+pillow
 # admin's own PC (local speech) only:
 faster-whisper
 nvidia-cublas-cu12

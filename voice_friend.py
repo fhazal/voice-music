@@ -142,7 +142,7 @@ def main() -> None:
         threading.Thread(target=watch_button, daemon=True).start()
         say("ready")
 
-    run_overlay(ui, lambda: level if held else 0.0, start)
+    run_overlay(ui, lambda: level if held else 0.0, start, HERE)
 
 
 if __name__ == "__main__":

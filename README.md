@@ -9,6 +9,8 @@ hold mouse 4 → "play Eminem Slim Shady" → let go → the bot plays it
 
 Say `play …`, `skip` (or `next`), `pause`, `resume`, `stop` or `volume 40`. English and Malay work.
 
+A small microphone icon sits in the Windows tray (next to the clock). Right-click it to start with Windows, open the log folder, or **Quit**.
+
 ## For friends: install
 
 1. Ask the server admin for your **webhook address** (they send it privately; treat it like a password).

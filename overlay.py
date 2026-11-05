@@ -23,7 +23,7 @@ def rounded(canvas, x1, y1, x2, y2, r, **kw):
     return canvas.create_polygon(pts, smooth=True, **kw)
 
 
-def run_overlay(ui: "queue.Queue", get_level, start=None) -> None:
+def run_overlay(ui: "queue.Queue", get_level, start=None, tray_dir=None) -> None:
     """ui carries (state, title, sub) tuples; get_level() returns 0..1 while recording."""
     root = tk.Tk()
     root.overrideredirect(True)
@@ -89,6 +89,13 @@ def run_overlay(ui: "queue.Queue", get_level, start=None) -> None:
 
     if start:
         start()
+    if tray_dir is not None:
+        try:
+            from tray import start_tray
+
+            start_tray(tray_dir)
+        except Exception:  # the program works without a tray icon
+            pass
     root.withdraw()
     root.after(50, tick)
     root.mainloop()

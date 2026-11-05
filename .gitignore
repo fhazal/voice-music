@@ -12,3 +12,5 @@
 !server/
 !server/voice-stt/
 !server/voice-stt/*
+!tray.py
+!voice-music.ico

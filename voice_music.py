@@ -189,7 +189,7 @@ def load() -> None:
 
 def main() -> None:
     single_instance()
-    run_overlay(ui, lambda: level if held else 0.0, lambda: threading.Thread(target=load, daemon=True).start())
+    run_overlay(ui, lambda: level if held else 0.0, lambda: threading.Thread(target=load, daemon=True).start(), HERE)
 
 
 if __name__ == "__main__":
